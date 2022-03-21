@@ -81,7 +81,6 @@ int main(int argc, char **argv) {
     field_print(f);
     if (verbose) {
       uint32_t eff;
-      puts("lol");
       eff = 100 * (field_count(f) / field_writes(f));
       printf("Touched Blades:		%u\n", field_count(f));
       printf("BitVector writes:	%u\n", field_writes(f));
