@@ -87,9 +87,9 @@ void bv_print(BitVector *bv) {
   for (uint64_t i = 0; i < bv_length(bv); i++) {
     // puts("test2");
     if (bv_get_bit(bv, i, &bit)) {
-      printf("1");
+      printf("-");
     } else {
-      printf("0");
+      printf("/");
     }
   }
   printf("\n");

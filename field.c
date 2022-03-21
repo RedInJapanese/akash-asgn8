@@ -5,12 +5,14 @@
 struct Field {
   uint32_t size;
   BitVector *matrix;
+  // uint64_t touched;
 };
 
 Field *field_create(uint32_t size) {
   Field *f = (Field *)malloc(sizeof(Field));
   f->size = size;
-  f->matrix = bv_create(size * size);
+  f->matrix = bv_create(size);
+  // f->touched = 0;
   return f;
 }
 
@@ -40,10 +42,11 @@ uint32_t field_writes(Field *f) { return bv_writes(f->matrix); }
 void field_touch_sequential(Field *f, uint32_t max_iters, unsigned int seed) {
   seed = 0;
   if (max_iters > field_size(f)) {
-    return;
+    max_iters = field_size(f);
   }
   for (uint32_t i = 0; i < max_iters; i++) {
     bv_set_bit(f->matrix, i);
+    // f->touched+=1;
   }
 }
 
@@ -54,6 +57,7 @@ void field_touch_wide(Field *f, uint32_t max_iters, unsigned int seed) {
   }
   for (uint32_t i = 0; i < max_iters; i++) {
     bv_set_64(f->matrix, i);
+    // f->touched+=64;
   }
 }
 
@@ -63,7 +67,11 @@ void field_touch_random(Field *f, uint32_t max_iters, unsigned int seed) {
   }
   for (uint32_t i = 0; i < max_iters; i++) {
     srandom(seed);
-    bv_set_bit(f->matrix, random() % field_size(f));
+    uint32_t x = random();
+    if (x >= 0 || x <= field_size(f)) {
+      bv_set_bit(f->matrix, x);
+      // f->touched+=1;
+    }
   }
 }
 

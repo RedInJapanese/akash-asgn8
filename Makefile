@@ -1,36 +1,25 @@
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -Wpedantic -O2 -march=nehalem -I.
-LFLAGS =
-OBJS=src/bv.o src/field.o src/grass.o
+CFLAGS = -Wall -Wextra -Werror -Wpedantic -Ofast
+LFLAGS = -g
+OBJS=bv.o grass.o field.o
 
-all: grass asgn8.pdf
+all: grass
 
 grass: $(OBJS)
 	$(CC) $(LDFLAGS) -o grass $(OBJS)
-
-asgn8.pdf: asgn8.tex
-	pdflatex asgn8.tex
-
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 tidy_objects:
 	$(RM) $(OBJS)
 
-tidy_latex:
-	$(RM) asgn8.aux asgn8.listing asgn8.log asgn8.out
-
-tidy: tidy_objects tidy_latex
+tidy: tidy_objects
 
 clean: tidy
-	$(RM) grass asgn8.pdf
-
-# --use-cc=clang allows it to run without GCC installed per @242 on Piazza
+	$(RM) grass
 scan-build: clean
 	scan-build --use-cc=clang make
 
 # suggested by tutor Eric
 format:
 	clang-format -i -style=file *.[ch]
-
-.PHONY: all clean scan-build format tidy tidy_objects tidy_latex
